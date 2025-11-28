@@ -99,8 +99,8 @@ window.L.Control.Notebookbar = window.L.Control.extend({
 				}
 			}
 			var docLogo = window.L.DomUtil.create('div', iconClass, docLogoHeader);
-			$(docLogo).data('id', 'document-logo');
-			$(docLogo).data('type', 'action');
+			docLogo.setAttribute('id', 'document-logo');
+			docLogo.setAttribute('type', 'action');
 			if (iconTooltip) {
 				docLogo.setAttribute('data-cooltip', iconTooltip);
 			}
