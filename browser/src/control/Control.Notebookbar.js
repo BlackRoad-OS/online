@@ -50,7 +50,7 @@ window.L.Control.Notebookbar = window.L.Control.extend({
 
 	// on show
 	create: function(container) {
-		var docType = this._map.getDocType();
+		let docType = this._map.getDocType();
 
 		if (document.documentElement.dir === 'rtl')
 			this._RTL = true;
@@ -78,11 +78,11 @@ window.L.Control.Notebookbar = window.L.Control.extend({
 		document.getElementById('document-container').classList.add('notebookbar-active');
 
 		if (!window.logoURL || window.logoURL != "none") {
-			var docLogoHeader = window.L.DomUtil.create('div', '');
+			let docLogoHeader = window.L.DomUtil.create('div', '');
 			docLogoHeader.id = 'document-header';
 
-			var iconClass = 'document-logo';
-			var iconTooltip;
+			let iconClass = 'document-logo';
+			let iconTooltip;
 			if (!window.logoURL) {
 				if (docType === 'text') {
 					iconClass += ' writer-icon-img';
@@ -98,7 +98,7 @@ window.L.Control.Notebookbar = window.L.Control.extend({
 					iconTooltip = 'Draw';
 				}
 			}
-			var docLogo = window.L.DomUtil.create('div', iconClass, docLogoHeader);
+			let docLogo = window.L.DomUtil.create('div', iconClass, docLogoHeader);
 			docLogo.setAttribute('id', 'document-logo');
 			docLogo.setAttribute('type', 'action');
 			if (iconTooltip) {
