@@ -77,7 +77,7 @@ void LoggingTests::testLogPrefix()
     {
         char buffer[256];
         const auto str = prefix.update(level, tp);
-        LOK_ASSERT_EQUAL_STR(Log::prefix(tp, buffer, level), str);
+        LOK_ASSERT_EQUAL_STR(Log::prefixReference(tp, buffer, level), str);
         const auto firstPos = str.find_first_of(' ');
         const auto secondPos = str.find_first_of(' ', firstPos + 1);
         const auto thirdPos = str.find_first_of(' ', secondPos + 1);
@@ -141,13 +141,13 @@ void LoggingTests::testLogPrefix()
 
         char buffer[256];
         const auto str = prefix.update(level, tp);
-        LOK_ASSERT_EQUAL_STR(Log::prefix(tp, buffer, level), str);
+        LOK_ASSERT_EQUAL_STR(Log::prefixReference(tp, buffer, level), str);
 
         Log::Prefix prefix2;
         LOK_ASSERT_EQUAL_STR(buffer, prefix2.update(level, tp));
 
         tp += std::chrono::seconds(1);
-        LOK_ASSERT_EQUAL_STR(Log::prefix(tp, buffer, level), prefix2.update(level, tp));
+        LOK_ASSERT_EQUAL_STR(Log::prefixReference(tp, buffer, level), prefix2.update(level, tp));
     }
 
     // Randomized comparative tests.
@@ -159,7 +159,7 @@ void LoggingTests::testLogPrefix()
 
         char buffer[256];
         const auto str = prefix.update(level, tp);
-        LOK_ASSERT_EQUAL_STR(Log::prefix(tp, buffer, level), str);
+        LOK_ASSERT_EQUAL_STR(Log::prefixReference(tp, buffer, level), str);
 
         Log::Prefix prefix2;
         LOK_ASSERT_EQUAL_STR(buffer, prefix2.update(level, tp));
@@ -183,7 +183,7 @@ void LoggingTests::testLogPrefix()
         for (int i = 0; i < 1'000'000; ++i)
         {
             const auto tp = getSystemTimeRoundedToMillis(i * 32);
-            [[maybe_unused]] const auto str = Log::prefix(tp, buffer, level);
+            [[maybe_unused]] const auto str = Log::prefixReference(tp, buffer, level);
         }
 
         LOG_INF("Old prefix took: " << sw.elapsed<std::chrono::microseconds>());
