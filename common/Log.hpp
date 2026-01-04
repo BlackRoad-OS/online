@@ -105,6 +105,8 @@ namespace Log
                                 std::chrono::time_point<std::chrono::system_clock> tp =
                                     std::chrono::system_clock::now());
 
+        static thread_local Prefix Instance;
+
     private:
         static constexpr std::size_t BufferSize = 128;
         std::array<char, BufferSize> _buffer;
@@ -122,12 +124,11 @@ namespace Log
     char* prefix(const std::chrono::time_point<std::chrono::system_clock>& tp, char* buffer,
                  const std::string_view level);
 
-    template <int Size>
-    inline char* prefix(std::array<char, Size>& buffer, const std::string_view level)
+    inline std::string_view
+    prefix(const std::string_view level,
+           std::chrono::time_point<std::chrono::system_clock> tp = std::chrono::system_clock::now())
     {
-        static_assert(Size >= 128, "Buffer size must be at least 128 bytes.");
-
-        return prefix(std::chrono::system_clock::now(), buffer.data(), level);
+        return Prefix::Instance.update(level, tp);
     }
 
     /// is a certain level of logging enabled ?
@@ -255,9 +256,7 @@ static constexpr std::size_t skipPathPrefix(const char (&s)[N], std::size_t n = 
     } while (false)
 
 #define LOG_BODY_(LVL, X, PREFIX, END)                                                             \
-    std::array<char, 1024> UNIQUE_VAR(buffer);                                                     \
-    std::ostringstream oss_(Log::prefix<UNIQUE_VAR(buffer).size()>(UNIQUE_VAR(buffer), #LVL),      \
-                            std::ostringstream::ate);                                              \
+    std::ostringstream oss_(Log::prefix(#LVL).data(), std::ostringstream::ate);                    \
     PREFIX(oss_);                                                                                  \
     oss_ << std::boolalpha << X;                                                                   \
     END(oss_);                                                                                     \
@@ -267,9 +266,7 @@ static constexpr std::size_t skipPathPrefix(const char (&s)[N], std::size_t n = 
 #define LOG_UNCONDITIONAL(LVL, X)                                                                  \
     do                                                                                             \
     {                                                                                              \
-        std::array<char, 1024> UNIQUE_VAR(buffer);                                                 \
-        std::ostringstream oss_(Log::prefix<UNIQUE_VAR(buffer).size()>(UNIQUE_VAR(buffer), #LVL),  \
-                                std::ostringstream::ate);                                          \
+        std::ostringstream oss_(Log::prefix(#LVL).data(), std::ostringstream::ate);                \
         logPrefix(oss_);                                                                           \
         oss_ << std::boolalpha << X;                                                               \
         LOG_END(oss_);                                                                             \
